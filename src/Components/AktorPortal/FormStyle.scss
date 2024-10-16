@@ -1,0 +1,56 @@
+Form {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.container-form-style {
+    width: 500px !important;
+
+    p {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+.fields{
+    flex-direction: column!important;
+}
+
+.ui.form{
+    min-height: 200px;
+
+}
+
+//Submit page 
+
+.submitted-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+
+    div {
+        text-align: center;
+    }
+
+    .big-green-check {
+        font-size: 80px;
+        color: #5cb68e;
+        margin-bottom: 20px;
+
+    }
+
+    h2 {
+        margin-top: 20px;
+        font-size: 28px;
+        justify-content: center;
+        text-align: center;
+    }
+
+    p {
+        font-size: 18px;
+    }
+}

@@ -1,0 +1,122 @@
+:root {
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  font-family: "Tstar Bold", Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+body{
+  background-color: rgb(252, 252, 252);
+}
+
+.ui.menu{
+  background-color: none!important;
+}
+
+
+.udi-logo {
+  width: 150px;
+  height: 80px;
+}
+
+main {
+  min-height: 80vh;
+  margin-top: 5rem;
+
+
+  h2 {
+    font-size: 40px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    margin-bottom: 2rem;
+  }
+}
+
+
+.menu {
+  border: none !important;
+  box-shadow: none !important;
+
+}
+
+//header / navbar
+
+.green-navbar {
+  background-color: rgba(207, 232, 204, 0.351) !important;
+  height: 70px;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+
+
+.nav-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
+
+}
+
+
+//footer
+
+footer {
+  height: 70px;
+  font-size: 12px;
+
+
+  p {
+    text-align: center;
+  }
+}
+
+
+
+
+
+//mobile stuff
+
+
+@media only screen and (max-width: 600px) {
+
+  body{
+    label{
+      font-size: 16px!important;
+
+    }
+  }
+
+  .udi-logo{
+    width: 100px;
+    height: 50px;
+  }
+
+  main{
+    margin-top: 1rem;
+  }
+
+  p{
+    font-size: 16px!important;
+  }
+
+  h5{
+    font-size: 16px!important;
+  }
+
+  input {
+    font-size: 20px!important;
+  }
+}
