@@ -10,7 +10,6 @@ const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated && accounts.length > 0) {
-      // Extract the name from the idTokenClaims
       const account = accounts[0];
       const userName = account.name || account.idTokenClaims?.name || "";
       setName(userName);
