@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Form, Input, Button, Message } from "semantic-ui-react";
+import { Form, Input, Button, Message, Radio } from "semantic-ui-react";
 import { GoPeople } from "react-icons/go";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
@@ -207,101 +207,105 @@ function FormQuestions() {
         />
       </Form.Field>
 
-      <div>
-        <label>
-          Spørsmål 1: Er det innsigelser?
-          <div>
-            <input
-              type="radio"
+      <Form.Field>
+        <label>Spørsmål 1: Er det innsigelser?</label>
+        <Form.Group>
+          <Form.Field>
+            <Radio
+              label="Ja"
+              name="objections"
               value="yes"
               checked={hasObjections === true}
               onChange={() => setHasObjections(true)}
               required
             />
-            Ja
-            <input
-              type="radio"
+          </Form.Field>
+          <Form.Field>
+            <Radio
+              label="Nei"
+              name="objections"
               value="no"
               checked={hasObjections === false}
               onChange={() => setHasObjections(false)}
             />
-            Nei
-          </div>
-        </label>
-      </div>
+          </Form.Field>
+        </Form.Group>
+      </Form.Field>
 
       {hasObjections === true && (
         <>
-          <div>
+          <Form.Field>
             <label>
               Spørsmål 2: Er det utreisedato for bruker som ikke passer?
-              <div>
-                <input
-                  type="radio"
+            </label>
+            <Form.Group>
+              <Form.Field>
+                <Radio
+                  label="Ja"
+                  name="departureDateMismatch"
                   value="yes"
                   checked={departureDateMismatch === true}
                   onChange={() => setDepartureDateMismatch(true)}
                 />
-                Ja
-                <input
-                  type="radio"
+              </Form.Field>
+              <Form.Field>
+                <Radio
+                  label="Nei"
+                  name="departureDateMismatch"
                   value="no"
                   checked={departureDateMismatch === false}
                   onChange={() => setDepartureDateMismatch(false)}
                 />
-                Nei
-              </div>
-            </label>
-          </div>
+              </Form.Field>
+            </Form.Group>
+          </Form.Field>
 
           {departureDateMismatch === true && (
-            <div>
-              <label>
-                Spørsmål 3: spesifiser dato som ville fungert.
-                <input
-                  type="date"
-                  value={
-                    proposedDate ? proposedDate.toISOString().split("T")[0] : ""
-                  }
-                  onChange={(e) => setProposedDate(new Date(e.target.value))}
-                />
-              </label>
-            </div>
+            <Form.Field>
+              <label>Spørsmål 3: spesifiser dato som ville fungert</label>
+              <Input
+                type="date"
+                value={
+                  proposedDate ? proposedDate.toISOString().split("T")[0] : ""
+                }
+                onChange={(e) => setProposedDate(new Date(e.target.value))}
+              />
+            </Form.Field>
           )}
 
-          <div>
-            <label>
-              Spørsmål 4: Er det gjeld som grunn til innsigelse?
-              <div>
-                <input
-                  type="radio"
+          <Form.Field>
+            <label>Spørsmål 4: Er det gjeld som grunn til innsigelse?</label>
+            <Form.Group>
+              <Form.Field>
+                <Radio
+                  label="Ja"
+                  name="debtAsCauseOfObjection"
                   value="yes"
                   checked={debtAsCauseOfObjection === true}
                   onChange={() => setDebtAsCauseOfObjection(true)}
                 />
-                Ja
-                <input
-                  type="radio"
+              </Form.Field>
+              <Form.Field>
+                <Radio
+                  label="Nei"
+                  name="debtAsCauseOfObjection"
                   value="no"
                   checked={debtAsCauseOfObjection === false}
                   onChange={() => setDebtAsCauseOfObjection(false)}
                 />
-                Nei
-              </div>
-            </label>
-          </div>
+              </Form.Field>
+            </Form.Group>
+          </Form.Field>
 
           {debtAsCauseOfObjection === true && (
-            <div>
-              <label>
-                Hva er gjeldsbeløpet?
-                <input
-                  type="number"
-                  value={debtValue || ""}
-                  onChange={(e) => setDebtValue(Number(e.target.value))}
-                />
-              </label>
-            </div>
+            <Form.Field>
+              <label>Hva er gjeldsbeløpet?</label>
+              <Input
+                type="number"
+                value={debtValue || ""}
+                onChange={(e) => setDebtValue(Number(e.target.value))}
+              />
+            </Form.Field>
           )}
         </>
       )}

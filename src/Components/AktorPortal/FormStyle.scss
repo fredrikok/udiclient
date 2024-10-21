@@ -13,11 +13,11 @@ Form {
     }
 }
 
-.fields{
-    flex-direction: column!important;
+.fields {
+    flex-direction: column !important;
 }
 
-.ui.form{
+.ui.form {
     min-height: 200px;
 
 }
@@ -52,5 +52,18 @@ Form {
 
     p {
         font-size: 18px;
+    }
+
+
+}
+
+
+
+.ConfirmedButton {
+    margin-top: 1rem !important;
+    transition: transform 0.1s ease-in-out !important;
+
+    &:hover {
+        transform: scale(1.05);
     }
 }

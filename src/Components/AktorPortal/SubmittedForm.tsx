@@ -13,7 +13,7 @@ function SubmittedForm() {
       <p>Du vil motta en bekreftelse på mail hvert øyeblikk</p>
 
       <Link to={"/form/1"}>
-        <Button basic color="blue">
+        <Button className="ConfirmedButton" basic color="blue">
           Nytt skjema
         </Button>
       </Link>

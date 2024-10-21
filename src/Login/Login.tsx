@@ -11,7 +11,8 @@ const Login = () => {
     try {
       const response = await instance.loginPopup(loginRequest);
       console.log("Login successful:", response);
-      window.location.href = `${import.meta.env.VITE_BASE_URL}/form/1`;
+
+      window.location.href = "form/1";
     } catch (error) {
       console.error("Login error:", error);
     }

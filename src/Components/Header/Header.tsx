@@ -1,11 +1,17 @@
 import { IoBriefcaseOutline } from "react-icons/io5";
 import { Link, useLocation } from "react-router-dom";
 import { Container, Menu } from "semantic-ui-react";
+import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 
 function Header() {
-
-
   const location = useLocation();
+
+  const isAuthenticated = useIsAuthenticated();
+  const { instance } = useMsal();
+
+  const handleLogout = () => {
+    instance.logoutRedirect();
+  };
 
   return (
     <>
@@ -41,33 +47,44 @@ function Header() {
           </Link>
           <Menu.Menu position="right">
             <Menu.Item>Norsk | Engelsk</Menu.Item>
-            <Menu.Item>Logg inn</Menu.Item>
+            <Menu.Item onClick={isAuthenticated ? handleLogout : undefined}>
+              {isAuthenticated ? "Logg ut" : "Logg inn"}
+            </Menu.Item>{" "}
           </Menu.Menu>
         </Menu>
       </Container>
       {/* Navbar */}
       <Menu borderless className="green-navbar">
         <Link to={"/"}>
-          <Menu.Item className="nav-item" active={location.pathname === '/'}>
+          <Menu.Item className="nav-item" active={location.pathname === "/"}>
             <IoBriefcaseOutline />
             Log inn
           </Menu.Item>
         </Link>
         <Link to={"/form/1"}>
-          <Menu.Item className="nav-item" active={location.pathname === '/form/1'}>
+          <Menu.Item
+            className="nav-item"
+            active={location.pathname === "/form/1"}
+          >
             <IoBriefcaseOutline />
             Referanse
           </Menu.Item>
         </Link>
         <Link to={"/form/2"}>
-          <Menu.Item className="nav-item" active={location.pathname === '/form/2'}>
+          <Menu.Item
+            className="nav-item"
+            active={location.pathname === "/form/2"}
+          >
             <IoBriefcaseOutline />
             Aktørportal
           </Menu.Item>
         </Link>
 
         <Link to={"/form/3"}>
-          <Menu.Item className="nav-item" active={location.pathname === '/form/3'}>
+          <Menu.Item
+            className="nav-item"
+            active={location.pathname === "/form/3"}
+          >
             <IoBriefcaseOutline />
             Bekreftelse
           </Menu.Item>
