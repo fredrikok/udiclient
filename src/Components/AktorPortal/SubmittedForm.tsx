@@ -12,7 +12,7 @@ function SubmittedForm() {
       <p>Dokumentasjon er sendt inn!</p>
       <p>Du vil motta en bekreftelse på mail hvert øyeblikk</p>
 
-      <Link to={"/"}>
+      <Link to={"/form/1"}>
         <Button basic color="blue">
           Nytt skjema
         </Button>
