@@ -1,8 +1,17 @@
 import { useState, useEffect } from "react";
-import { Form, Input, Button, Message, Radio } from "semantic-ui-react";
+import {
+  Form,
+  Input,
+  Button,
+  Message,
+  Radio,
+  Container,
+} from "semantic-ui-react";
 import { GoPeople } from "react-icons/go";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
+import { getCookie } from "../../Cookies/GetCookies";
+import { setCookie } from "../../Cookies/SetCookie";
 
 function FormQuestions() {
   const [, setSpecialID] = useState<string>("");
@@ -27,6 +36,35 @@ function FormQuestions() {
   const { state } = useLocation();
   const orgNavnFromState = state?.orgName || "";
   const rfnr = state?.rfnr || "";
+
+  //-------------------------------------------
+  //cookies
+  //-------------------------------------------
+
+  useEffect(() => {
+    const savedContactPerson = getCookie("contactPerson");
+    const savedEmail = getCookie("email");
+    if (savedContactPerson) setContactPerson(savedContactPerson);
+    if (savedEmail) setEmail(savedEmail);
+  }, []);
+
+  const handleContactPersonChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const name = e.target.value;
+    setContactPerson(name);
+    setCookie("contactPerson", name, 7);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const userEmail = e.target.value;
+    setEmail(userEmail);
+    setCookie("email", userEmail, 7);
+  };
+
+  //--------------------------------------------
+  //Form
+  //--------------------------------------------
 
   useEffect(() => {
     setOrgNavn(orgNavnFromState);
@@ -125,9 +163,7 @@ function FormQuestions() {
     if (contactPerson && email && hasObjections !== null) {
       handleSubmit();
     } else {
-      setError(
-        "Please fill in the required fields: Name, Email, and if there are objections."
-      );
+      setError("Fyll ut skjema før du sender inn.");
     }
   };
 
@@ -136,193 +172,195 @@ function FormQuestions() {
   };
 
   return (
-    <Form>
-      <h2>
-        <GoPeople />
-        Kontakt info
-      </h2>
-      <h3>
-        Dersom UDI har spørsmål til denne innsendingen vennligst fyll ut kontakt
-        informasjon.
-      </h3>
+    <Container className="container-form-style">
+      <Form>
+        <h2>
+          <GoPeople />
+          Kontakt info
+        </h2>
+        <h3>
+          Dersom UDI har spørsmål til denne innsendingen vennligst fyll ut
+          kontakt informasjon.
+        </h3>
 
-      {error && (
-        <Message negative>
-          <p>{error}</p>
-        </Message>
-      )}
+        {error && (
+          <Message negative>
+            <p>{error}</p>
+          </Message>
+        )}
 
-      <Form.Field>
-        <label>Organisasjonsnummer</label>
-        <Input
-          placeholder="Skriv her..."
-          value={orgNr}
-          onChange={(e) => setSpecialID(e.target.value)}
-          required
-          style={{ width: "100%" }}
-        />
-      </Form.Field>
+        <Form.Field>
+          <label>Organisasjonsnummer</label>
+          <Input
+            placeholder="Skriv her..."
+            value={orgNr}
+            onChange={(e) => setSpecialID(e.target.value)}
+            required
+            style={{ width: "100%" }}
+          />
+        </Form.Field>
 
-      <Form.Field>
-        <label>Referansenummer</label>
-        <Input
-          placeholder="Skriv her..."
-          value={referenceNr}
-          onChange={(e) => setReferenceNr(e.target.value)}
-          required
-          style={{ width: "100%" }}
-        />
-      </Form.Field>
+        <Form.Field>
+          <label>Referansenummer</label>
+          <Input
+            placeholder="Skriv her..."
+            value={referenceNr}
+            onChange={(e) => setReferenceNr(e.target.value)}
+            required
+            style={{ width: "100%" }}
+          />
+        </Form.Field>
 
-      <Form.Field>
-        <label>Organisasjonsnavn</label>
-        <Input
-          placeholder="Skriv her..."
-          value={orgNavn}
-          onChange={handleOrgNameChange}
-          required
-          style={{ width: "100%" }}
-        />
-      </Form.Field>
+        <Form.Field>
+          <label>Organisasjonsnavn</label>
+          <Input
+            placeholder="Skriv her..."
+            value={orgNavn}
+            onChange={handleOrgNameChange}
+            required
+            style={{ width: "100%" }}
+          />
+        </Form.Field>
 
-      <Form.Field>
-        <label>Kontakt informasjon</label>
-        <Input
-          placeholder="Skriv her..."
-          value={contactPerson}
-          onChange={(e) => setContactPerson(e.target.value)}
-          required
-          style={{ width: "100%" }}
-        />
-      </Form.Field>
+        <Form.Field>
+          <label>Kontakt informasjon</label>
+          <Input
+            placeholder="Skriv her..."
+            value={contactPerson}
+            onChange={handleContactPersonChange}
+            required
+            style={{ width: "100%" }}
+          />
+        </Form.Field>
 
-      <Form.Field>
-        <label>E-post</label>
-        <Input
-          placeholder="Skriv her..."
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{ width: "100%" }}
-        />
-      </Form.Field>
+        <Form.Field>
+          <label>E-post</label>
+          <Input
+            placeholder="Skriv her..."
+            value={email}
+            onChange={handleEmailChange}
+            required
+            style={{ width: "100%" }}
+          />
+        </Form.Field>
 
-      <Form.Field>
-        <label>Spørsmål 1: Er det innsigelser?</label>
-        <Form.Group>
-          <Form.Field>
-            <Radio
-              label="Ja"
-              name="objections"
-              value="yes"
-              checked={hasObjections === true}
-              onChange={() => setHasObjections(true)}
-              required
-            />
-          </Form.Field>
-          <Form.Field>
-            <Radio
-              label="Nei"
-              name="objections"
-              value="no"
-              checked={hasObjections === false}
-              onChange={() => setHasObjections(false)}
-            />
-          </Form.Field>
-        </Form.Group>
-      </Form.Field>
-
-      {hasObjections === true && (
-        <>
-          <Form.Field>
-            <label>
-              Spørsmål 2: Er det utreisedato for bruker som ikke passer?
-            </label>
-            <Form.Group>
-              <Form.Field>
-                <Radio
-                  label="Ja"
-                  name="departureDateMismatch"
-                  value="yes"
-                  checked={departureDateMismatch === true}
-                  onChange={() => setDepartureDateMismatch(true)}
-                />
-              </Form.Field>
-              <Form.Field>
-                <Radio
-                  label="Nei"
-                  name="departureDateMismatch"
-                  value="no"
-                  checked={departureDateMismatch === false}
-                  onChange={() => setDepartureDateMismatch(false)}
-                />
-              </Form.Field>
-            </Form.Group>
-          </Form.Field>
-
-          {departureDateMismatch === true && (
+        <Form.Field>
+          <label>Spørsmål 1: Er det innsigelser?</label>
+          <Form.Group>
             <Form.Field>
-              <label>Spørsmål 3: spesifiser dato som ville fungert</label>
-              <Input
-                type="date"
-                value={
-                  proposedDate ? proposedDate.toISOString().split("T")[0] : ""
-                }
-                onChange={(e) => setProposedDate(new Date(e.target.value))}
+              <Radio
+                label="Ja"
+                name="objections"
+                value="yes"
+                checked={hasObjections === true}
+                onChange={() => setHasObjections(true)}
+                required
               />
             </Form.Field>
-          )}
-
-          <Form.Field>
-            <label>Spørsmål 4: Er det gjeld som grunn til innsigelse?</label>
-            <Form.Group>
-              <Form.Field>
-                <Radio
-                  label="Ja"
-                  name="debtAsCauseOfObjection"
-                  value="yes"
-                  checked={debtAsCauseOfObjection === true}
-                  onChange={() => setDebtAsCauseOfObjection(true)}
-                />
-              </Form.Field>
-              <Form.Field>
-                <Radio
-                  label="Nei"
-                  name="debtAsCauseOfObjection"
-                  value="no"
-                  checked={debtAsCauseOfObjection === false}
-                  onChange={() => setDebtAsCauseOfObjection(false)}
-                />
-              </Form.Field>
-            </Form.Group>
-          </Form.Field>
-
-          {debtAsCauseOfObjection === true && (
             <Form.Field>
-              <label>Hva er gjeldsbeløpet?</label>
-              <Input
-                type="number"
-                value={debtValue || ""}
-                onChange={(e) => setDebtValue(Number(e.target.value))}
+              <Radio
+                label="Nei"
+                name="objections"
+                value="no"
+                checked={hasObjections === false}
+                onChange={() => setHasObjections(false)}
               />
             </Form.Field>
-          )}
-        </>
-      )}
-      <Grid>
-        <Grid.Column textAlign="center">
-          <Button onClick={handlePrevious}>Forrige side</Button>
-          <Button
-            type="button"
-            onClick={handleNext}
-            disabled={loading}
-            positive
-          >
-            {loading ? "Laster..." : "Neste Side"}
-          </Button>
-        </Grid.Column>
-      </Grid>
-    </Form>
+          </Form.Group>
+        </Form.Field>
+
+        {hasObjections === true && (
+          <>
+            <Form.Field>
+              <label>
+                Spørsmål 2: Er det utreisedato for bruker som ikke passer?
+              </label>
+              <Form.Group>
+                <Form.Field>
+                  <Radio
+                    label="Ja"
+                    name="departureDateMismatch"
+                    value="yes"
+                    checked={departureDateMismatch === true}
+                    onChange={() => setDepartureDateMismatch(true)}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <Radio
+                    label="Nei"
+                    name="departureDateMismatch"
+                    value="no"
+                    checked={departureDateMismatch === false}
+                    onChange={() => setDepartureDateMismatch(false)}
+                  />
+                </Form.Field>
+              </Form.Group>
+            </Form.Field>
+
+            {departureDateMismatch === true && (
+              <Form.Field>
+                <label>Spørsmål 3: spesifiser dato som ville fungert</label>
+                <Input
+                  type="date"
+                  value={
+                    proposedDate ? proposedDate.toISOString().split("T")[0] : ""
+                  }
+                  onChange={(e) => setProposedDate(new Date(e.target.value))}
+                />
+              </Form.Field>
+            )}
+
+            <Form.Field>
+              <label>Spørsmål 4: Er det gjeld som grunn til innsigelse?</label>
+              <Form.Group>
+                <Form.Field>
+                  <Radio
+                    label="Ja"
+                    name="debtAsCauseOfObjection"
+                    value="yes"
+                    checked={debtAsCauseOfObjection === true}
+                    onChange={() => setDebtAsCauseOfObjection(true)}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <Radio
+                    label="Nei"
+                    name="debtAsCauseOfObjection"
+                    value="no"
+                    checked={debtAsCauseOfObjection === false}
+                    onChange={() => setDebtAsCauseOfObjection(false)}
+                  />
+                </Form.Field>
+              </Form.Group>
+            </Form.Field>
+
+            {debtAsCauseOfObjection === true && (
+              <Form.Field>
+                <label>Hva er gjeldsbeløpet?</label>
+                <Input
+                  type="number"
+                  value={debtValue || ""}
+                  onChange={(e) => setDebtValue(Number(e.target.value))}
+                />
+              </Form.Field>
+            )}
+          </>
+        )}
+        <Grid>
+          <Grid.Column textAlign="center">
+            <Button onClick={handlePrevious}>Forrige side</Button>
+            <Button
+              type="button"
+              onClick={handleNext}
+              disabled={loading}
+              positive
+            >
+              {loading ? "Laster..." : "Send Skjema"}
+            </Button>
+          </Grid.Column>
+        </Grid>
+      </Form>
+    </Container>
   );
 }
 

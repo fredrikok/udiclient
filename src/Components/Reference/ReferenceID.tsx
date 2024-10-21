@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { IoBriefcaseOutline } from "react-icons/io5";
 import { Form, Button, Container, Grid } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
@@ -11,29 +11,18 @@ interface UserData {
 
 function ReferenceID() {
   const [id, setId] = useState("");
-  const [data, setData] = useState<UserData | null>(null);
+  const [, setData] = useState<UserData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [name, setName] = useState<string | null>(null);
-  const [orgName, setOrgName] = useState<string | null>(null);
-  const [rfnr, setRrNr] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [, setName] = useState<string | null>(null);
+  const [, setOrgName] = useState<string | null>(null);
+  const [, setRrNr] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      if (id) {
-        fetchUserData();
-      } else {
-        setData(null);
-        setError(null);
-      }
-    }, 500);
-
-    return () => clearTimeout(handler);
-  }, [id]);
 
   const fetchUserData = async () => {
     setData(null);
     setError(null);
+    setLoading(true);
 
     try {
       const response = await fetch(
@@ -49,28 +38,30 @@ function ReferenceID() {
         setOrgName(result.orgName);
         setRrNr(result.referanceNr.toString());
         setData(result);
+
+        navigate("/form/2", {
+          state: {
+            name: result.fullName,
+            orgName: result.orgName,
+            rfnr: result.referanceNr.toString(),
+          },
+        });
       } else {
         setError("Referanse nummeret finnes ikke. Vennligst sjekk ID-en.");
       }
     } catch (err: any) {
       setError("Feil ved henting av data. Vennligst sjekk ID-en.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleNext = () => {
-    if (!data || data.referanceNr === undefined || data.referanceNr === null) {
-      setError("Referanse nummeret finnes ikke. Vennligst sjekk ID-en.");
+  const handleSubmit = () => {
+    if (id.trim() === "") {
+      setError("Vennligst fyll inn en gyldig referanse ID.");
       return;
     }
-
-    const referenceNumber = data.referanceNr.toString();
-
-    if (referenceNumber.trim() === "") {
-      setError("Referanse nummeret finnes ikke. Vennligst sjekk ID-en.");
-      return;
-    }
-
-    navigate("/form/2", { state: { name, orgName, rfnr } });
+    fetchUserData();
   };
 
   return (
@@ -79,7 +70,7 @@ function ReferenceID() {
         <IoBriefcaseOutline /> Referanse
       </h2>
       <Form>
-        <h3>Fyll inn din referanse ID mottat i brev fra UDI.</h3>
+        <h3>Fyll inn din referanse ID mottatt i brev fra UDI.</h3>
         <Form.Field>
           <label>Referanse ID</label>
           <input
@@ -93,9 +84,14 @@ function ReferenceID() {
         <Grid>
           <Grid.Column textAlign="center">
             <Button onClick={() => navigate(-1)}>Forrige side</Button>
-            <Button type="button" onClick={handleNext} positive>
-              {" "}
-              Neste Side{" "}
+            <Button
+              type="button"
+              onClick={handleSubmit}
+              positive
+              // disabled={loading || !id}
+              loading={loading}
+            >
+              Neste Side
             </Button>
           </Grid.Column>
         </Grid>

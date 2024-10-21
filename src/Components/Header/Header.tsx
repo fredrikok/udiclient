@@ -58,7 +58,7 @@ function Header() {
         <Link to={"/"}>
           <Menu.Item className="nav-item" active={location.pathname === "/"}>
             <IoBriefcaseOutline />
-            Log inn
+            {isAuthenticated ? "Profil" : "Logg inn"}
           </Menu.Item>
         </Link>
         <Link to={"/form/1"}>
