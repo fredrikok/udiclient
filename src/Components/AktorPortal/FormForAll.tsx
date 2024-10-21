@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
 
 function FormQuestions() {
-  const [specialID, setSpecialID] = useState<string>("");
+  const [, setSpecialID] = useState<string>("");
   const [contactPerson, setContactPerson] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [referenceNr, setReferenceNr] = useState<string>("");
@@ -46,7 +46,6 @@ function FormQuestions() {
       try {
         const response = await fetch(requestUrl);
         if (!response.ok) {
-          const responseBody = await response.text();
           throw new Error(
             `Failed to fetch organization number. Status: ${response.status}`
           );
@@ -63,11 +62,10 @@ function FormQuestions() {
             setError("No organization found with that name.");
           }
         } else {
-          const text = await response.text();
           setError("Received a non-JSON response from the server.");
         }
       } catch (error) {
-        setError(`Error: ${error.message}`);
+        setError("Error");
       } finally {
         setLoading(false);
       }
@@ -117,10 +115,9 @@ function FormQuestions() {
         throw new Error("Failed to submit case");
       }
 
-      const result = await response.json();
       navigate("/form/3", { state: {} });
     } catch (error) {
-      setError("Error submitting case: " + error.message);
+      setError("Error submitting case: ");
     }
   };
 

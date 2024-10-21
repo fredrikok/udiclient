@@ -1,0 +1,46 @@
+Form {
+  display: flex;
+  flex-direction: column;
+}
+
+.container-form-style {
+  width: 500px !important;
+}
+.container-form-style p {
+  margin: 0;
+  padding: 0;
+}
+
+.fields {
+  flex-direction: column !important;
+}
+
+.ui.form {
+  min-height: 200px;
+}
+
+.submitted-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+.submitted-form div {
+  text-align: center;
+}
+.submitted-form .big-green-check {
+  font-size: 80px;
+  color: #5cb68e;
+  margin-bottom: 20px;
+}
+.submitted-form h2 {
+  margin-top: 20px;
+  font-size: 28px;
+  justify-content: center;
+  text-align: center;
+}
+.submitted-form p {
+  font-size: 18px;
+}/*# sourceMappingURL=FormStyle.css.map */
