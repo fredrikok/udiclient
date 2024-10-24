@@ -123,6 +123,7 @@ function FormQuestions() {
         setCurrentPage((prev) => prev - 1);
     };
 
+
     const handleSubmit = async () => {
         const caseData = {
             caseId: 0,
@@ -145,6 +146,7 @@ function FormQuestions() {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        "X-Api-Key": `${import.meta.env.VITE_API_KEY}`
                     },
                     body: JSON.stringify(caseData),
                 }

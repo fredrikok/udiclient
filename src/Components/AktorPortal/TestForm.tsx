@@ -20,7 +20,8 @@ function TestForm() {
         fetch(`${import.meta.env.VITE_BASE_URL}/api/User`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "X-Api-Key": `Bearer ${import.meta.env.VITE_API_KEY}`
             },
             body: JSON.stringify(formData)
         })

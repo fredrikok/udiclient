@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { IoBriefcaseOutline } from "react-icons/io5";
 import { Form, Button, Container, Grid } from "semantic-ui-react";
@@ -19,15 +21,21 @@ function ReferenceID() {
   const [, setRrNr] = useState<string | null>(null);
   const navigate = useNavigate();
 
+
   const fetchUserData = async () => {
     setData(null);
     setError(null);
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BASE_URL}/api/User/${id}`
-      );
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/User/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Api-Key": `${import.meta.env.VITE_API_KEY}`
+        },
+      })
+
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
@@ -49,7 +57,7 @@ function ReferenceID() {
       } else {
         setError("Referanse nummeret finnes ikke. Vennligst sjekk ID-en.");
       }
-    } catch (err: any) {
+    } catch (err) {
       setError("Feil ved henting av data. Vennligst sjekk ID-en.");
     } finally {
       setLoading(false);
