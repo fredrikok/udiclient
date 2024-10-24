@@ -4,6 +4,7 @@ import { useState } from "react";
 import { IoBriefcaseOutline } from "react-icons/io5";
 import { Form, Button, Container, Grid } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
+import { FaAsterisk } from "react-icons/fa";
 
 interface UserData {
   fullName: string;
@@ -16,7 +17,7 @@ function ReferenceID() {
   const [, setData] = useState<UserData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [, setName] = useState<string | null>(null);
+  const [, setApplicantName] = useState<string | null>(null);
   const [, setOrgName] = useState<string | null>(null);
   const [, setRrNr] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -42,14 +43,14 @@ function ReferenceID() {
 
       const result: UserData = await response.json();
       if (result && (result.referanceNr || result.referanceNr === 0)) {
-        setName(result.fullName);
+        setApplicantName(result.fullName);
         setOrgName(result.orgName);
         setRrNr(result.referanceNr.toString());
         setData(result);
 
         navigate("/form/2", {
           state: {
-            name: result.fullName,
+            applicantName: result.fullName,
             orgName: result.orgName,
             rfnr: result.referanceNr.toString(),
           },
@@ -80,7 +81,10 @@ function ReferenceID() {
       <Form>
         <h3>Fyll inn din referanse ID mottatt i brev fra UDI.</h3>
         <Form.Field>
-          <label>Referanse ID</label>
+          <div className="labelWrapper">
+            <FaAsterisk />
+            <label>Referanse ID</label>
+          </div>
           <input
             type="text"
             value={id}
@@ -89,6 +93,8 @@ function ReferenceID() {
             required
           />
         </Form.Field>
+
+
         <Grid>
           <Grid.Column textAlign="center">
             {/* <Button onClick={() => navigate(0)}>Forrige side</Button> */}

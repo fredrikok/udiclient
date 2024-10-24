@@ -2,14 +2,49 @@ Form {
     display: flex;
     flex-direction: column;
     
-    label{
-        margin-bottom: 1rem!important;
-    }
 }
 .ui.disabled.input{
     opacity: 1!important;
 }
 
+.labelWrapper{
+    margin-bottom: 1rem !important;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    svg{
+        font-size: 9px!important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        position: absolute;
+        left: -15px;
+    }
+}
+
+@keyframes shake {
+    25% { transform: scale(1.03); }
+    100% { transform: scale(1); }
+
+}
+
+
+.Error {
+    color: red!important; 
+    animation: shake 0.2s; 
+    input{
+        color: red!important; 
+
+    }
+    p{
+        font-size: 12px!important;
+        opacity: 0.6;
+    }
+    svg{
+        color: red!important; 
+    }
+}
 
 .container-form-style {
     width: 500px !important;

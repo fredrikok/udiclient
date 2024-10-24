@@ -5,19 +5,19 @@ import { useEffect, useState } from "react";
 export const AzureInfo = () => {
     const isAuthenticated = useIsAuthenticated();
     const { accounts } = useMsal();
-    const [name, setName] = useState<string>("");
+    const [userName, setUserName] = useState<string>("");
     const [userEmail, setUserEmail] = useState<string | any>("");
 
     useEffect(() => {
         if (isAuthenticated && accounts.length > 0) {
             const account = accounts[0];
-            const userName = account.name || account.idTokenClaims?.name || "";
+            const azureUserName = account.name || account.idTokenClaims?.name || "";
             const azureEmail = account.username || account.idTokenClaims?.username || undefined;
 
-            setName(userName);
+            setUserName(azureUserName);
             setUserEmail(azureEmail);
         }
     }, [isAuthenticated, accounts]);
 
-    return { name, userEmail };
+    return { userName, userEmail };
 };

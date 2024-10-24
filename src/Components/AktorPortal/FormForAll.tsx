@@ -14,6 +14,7 @@ import { Grid } from "semantic-ui-react";
 import { getCookie } from "../../Cookies/GetCookies";
 import { setCookie } from "../../Cookies/SetCookie";
 import { AzureInfo } from "../AzureInfo";
+import { FaAsterisk } from "react-icons/fa";
 
 function FormQuestions() {
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -32,20 +33,25 @@ function FormQuestions() {
 
     const navigate = useNavigate();
     const { state } = useLocation();
+    const applicantName = state?.applicantName || "";
     const orgNavnFromState = state?.orgName || "";
     const rfnr = state?.rfnr || "";
 
-    const { name, userEmail } = AzureInfo();
+    const [contactError, setContactError] = useState<string>("");
+    const [emailError, setEmailError] = useState<string>("");
+
+    const { userName, userEmail } = AzureInfo();
 
     const today = new Date().toISOString().split("T")[0];
 
+    console.log(name)
 
     // Cookie logic
     useEffect(() => {
         if (contactPerson === "") {
             const savedContactPerson = getCookie("contactPerson");
             if (savedContactPerson == "") {
-                setContactPerson(name);
+                setContactPerson(userName);
             }
 
             const savedEmail = getCookie("email");
@@ -55,20 +61,20 @@ function FormQuestions() {
 
             if (savedContactPerson) {
                 setContactPerson(savedContactPerson);
-            } else if (name) {
-                setContactPerson(name);
             }
             if (savedEmail) setEmail(savedEmail);
         }
     }, [name, userEmail]);
 
     const handleContactPersonChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setContactError("");
         const name = e.target.value;
         setContactPerson(name);
         setCookie("contactPerson", name, 7);
     };
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmailError("");
         const userEmail = e.target.value;
         setEmail(userEmail);
         setCookie("email", userEmail, 7);
@@ -108,6 +114,7 @@ function FormQuestions() {
         }
     };
 
+
     const handleOrgNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const name = e.target.value.trim();
         setOrgNavn(name);
@@ -116,7 +123,25 @@ function FormQuestions() {
     };
 
     const handleNextPage = () => {
-        setCurrentPage((prev) => prev + 1);
+        let valid = true;
+
+        if (!contactPerson.trim()) {
+            setContactError("Kontaktinformasjon er påkrevd.");
+            valid = false;
+        }
+
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.trim()) {
+            setEmailError("E-post er påkrevd.");
+            valid = false;
+        } else if (!emailPattern.test(email)) {
+            setEmailError("Ugyldig e-postadresse.");
+            valid = false;
+        }
+
+        if (valid) {
+            setCurrentPage((prev) => prev + 1);
+        }
     };
 
     const handlePreviousPage = () => {
@@ -178,12 +203,23 @@ function FormQuestions() {
                             <Input disabled value={orgNavn} onChange={handleOrgNameChange} />
                         </Form.Field>
                         <Form.Field>
-                            <label>Kontakt informasjon</label>
+                            <div className="labelWrapper">
+                                <FaAsterisk />
+                                <label>Kontakt informasjon</label>
+                            </div>
                             <Input value={contactPerson} onChange={handleContactPersonChange} />
+                            {contactError && <Message negative>{contactError}</Message>}
                         </Form.Field>
                         <Form.Field>
-                            <label>E-post</label>
-                            <Input value={email} onChange={handleEmailChange} />
+                            <div className={emailError ? "labelWrapper Error" : "labelWrapper "}>
+                                <FaAsterisk />
+                                <label>E-post</label>
+                                {emailError && <p>{emailError}</p>}
+                            </div>
+                            <Input
+                                className={emailError ? " Error" : ""}
+                                value={email} onChange={handleEmailChange} />
+                            {/* {emailError && <Message negative>{emailError}</Message>} */}
                         </Form.Field>
                     </>
                 );
@@ -219,7 +255,7 @@ function FormQuestions() {
                             <>
                                 <Form.Field>
                                     <label>
-                                        Spørsmål 2: Er det utreisedato for bruker som ikke passer?
+                                        Spørsmål 2: Er det utreisedato for søker som ikke passer?
                                     </label>
                                     <Form.Group>
                                         <Form.Field>
@@ -245,7 +281,7 @@ function FormQuestions() {
 
                                 {departureDateMismatch === true && (
                                     <Form.Field>
-                                        <label>Spørsmål 3: spesifiser dato som ville fungert</label>
+                                        <label>Spørsmål 3: spesifiser dato</label>
                                         <Input
                                             type="date"
                                             min={today}
@@ -304,11 +340,13 @@ function FormQuestions() {
                 return (
                     <>
                         <h2>Sammendrag</h2>
+                        <p>Søker: {applicantName}</p>
                         <p>Kontaktperson: {contactPerson}</p>
                         <p>E-post: {email}</p>
                         <p>Referansenummer: {referenceNr}</p>
                         <p>Organisasjonsnummer: {orgNr}</p>
-                        <p>Har innsigelser: {hasObjections ? "Ja" : "Nei"}</p>
+                        <p>Organisasjonsnavn: {orgNavn}</p>
+
                         {departureDateMismatch && <p>Foreslått dato: {proposedDate?.toLocaleDateString()}</p>}
                         {debtAsCauseOfObjection && <p>Gjeldsbeløp: {debtValue}</p>}
                     </>
