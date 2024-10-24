@@ -31,7 +31,7 @@ main {
 
 
   h2 {
-    font-size: 40px;
+    font-size: 30px;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -118,21 +118,21 @@ footer {
   }
 
   input {
-    font-size: 20px !important;
+    // font-size: 20px !important;
   }
 }
 
 @media only screen and (min-width: 2000px) {
 
-  body {
-    margin-top: 10rem !important;
-    scale: 1.2;
-  }
+  // #root {
+  //   margin-top: 10rem !important;
+  //   scale: 1.6;
+  // }
 }
 
 
 //vanlig skjerm
 
 @media only screen and (min-width: 1300px) {
-  body {}
+  // body {}
 }

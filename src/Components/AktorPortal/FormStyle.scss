@@ -1,6 +1,13 @@
 Form {
     display: flex;
     flex-direction: column;
+    
+    label{
+        margin-bottom: 1rem!important;
+    }
+}
+.ui.disabled.input{
+    opacity: 1!important;
 }
 
 

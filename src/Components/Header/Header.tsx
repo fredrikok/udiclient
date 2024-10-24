@@ -5,13 +5,21 @@ import { useIsAuthenticated, useMsal } from "@azure/msal-react";
 
 function Header() {
   const location = useLocation();
-
   const isAuthenticated = useIsAuthenticated();
   const { instance } = useMsal();
 
   const handleLogout = () => {
     instance.logoutRedirect();
   };
+
+  const navItems = [
+    { path: "/form/1", label: "Referanse" },
+    { path: "/form/2", label: "Skjema" },
+    { path: "/form/3", label: "Bekreftelse" },
+  ];
+
+  // Find the current active item based on the URL
+  const activeItem = navItems.find((item) => location.pathname === item.path);
 
   return (
     <>
@@ -49,7 +57,7 @@ function Header() {
             <Menu.Item>Norsk | Engelsk</Menu.Item>
             <Menu.Item onClick={isAuthenticated ? handleLogout : undefined}>
               {isAuthenticated ? "Logg ut" : "Logg inn"}
-            </Menu.Item>{" "}
+            </Menu.Item>
           </Menu.Menu>
         </Menu>
       </Container>
@@ -61,34 +69,15 @@ function Header() {
             {isAuthenticated ? "Profil" : "Logg inn"}
           </Menu.Item>
         </Link>
-        <Link to={"/form/1"}>
-          <Menu.Item
-            className="nav-item"
-            active={location.pathname === "/form/1"}
-          >
-            <IoBriefcaseOutline />
-            Referanse
-          </Menu.Item>
-        </Link>
-        <Link to={"/form/2"}>
-          <Menu.Item
-            className="nav-item"
-            active={location.pathname === "/form/2"}
-          >
-            <IoBriefcaseOutline />
-            Aktørportal
-          </Menu.Item>
-        </Link>
 
-        <Link to={"/form/3"}>
-          <Menu.Item
-            className="nav-item"
-            active={location.pathname === "/form/3"}
-          >
-            <IoBriefcaseOutline />
-            Bekreftelse
-          </Menu.Item>
-        </Link>
+        {activeItem && (
+          <Link to={activeItem.path}>
+            <Menu.Item className="nav-item" active>
+              <IoBriefcaseOutline />
+              {activeItem.label}
+            </Menu.Item>
+          </Link>
+        )}
       </Menu>
     </>
   );

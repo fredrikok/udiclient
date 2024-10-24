@@ -77,18 +77,17 @@ function ReferenceID() {
             type="text"
             value={id}
             onChange={(e) => setId(e.target.value)}
-            placeholder="Enter ID"
+            placeholder="Referanse ID"
             required
           />
         </Form.Field>
         <Grid>
           <Grid.Column textAlign="center">
-            <Button onClick={() => navigate(-1)}>Forrige side</Button>
+            {/* <Button onClick={() => navigate(0)}>Forrige side</Button> */}
             <Button
               type="button"
               onClick={handleSubmit}
               positive
-              // disabled={loading || !id}
               loading={loading}
             >
               Neste Side
