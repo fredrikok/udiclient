@@ -33,7 +33,7 @@ function FormQuestions() {
 
     const navigate = useNavigate();
     const { state } = useLocation();
-    const applicantName = state?.applicantName || "";
+    const applicantName = state?.name || "";
     const orgNavnFromState = state?.orgName || "";
     const rfnr = state?.rfnr || "";
 
@@ -227,7 +227,7 @@ function FormQuestions() {
                 return (
                     <>
                         <Form.Field>
-                            <label>Spørsmål 1: Er det innsigelser?</label>
+                            <label>Spørsmål 1: Har innvendinger?</label>
                             <Form.Group>
                                 <Form.Field>
                                     <Radio

@@ -1,10 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { IoBriefcaseOutline } from "react-icons/io5";
-import { Form, Button, Container, Grid } from "semantic-ui-react";
+import { Form, Button, Container, Grid, Input } from "semantic-ui-react";
 import { useNavigate } from "react-router-dom";
-import { FaAsterisk } from "react-icons/fa";
 
 interface UserData {
   fullName: string;
@@ -14,14 +11,11 @@ interface UserData {
 
 function ReferenceID() {
   const [id, setId] = useState("");
-  const [, setData] = useState<UserData | null>(null);
+  const [editId, setEditId] = useState("");
+  const [data, setData] = useState<UserData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [, setApplicantName] = useState<string | null>(null);
-  const [, setOrgName] = useState<string | null>(null);
-  const [, setRrNr] = useState<string | null>(null);
   const navigate = useNavigate();
-
 
   const fetchUserData = async () => {
     setData(null);
@@ -29,28 +23,19 @@ function ReferenceID() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/User/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Api-Key": `${import.meta.env.VITE_API_KEY}`
-        },
-      })
-
+      const response = await fetch(
+        `${import.meta.env.VITE_BASE_URL}/api/User/${id}`
+      );
       if (!response.ok) {
-        throw new Error(`Error fetching data: ${response.statusText}`);
+        throw new Error(`Error fetching user data: ${response.statusText}`);
       }
 
       const result: UserData = await response.json();
       if (result && (result.referanceNr || result.referanceNr === 0)) {
-        setApplicantName(result.fullName);
-        setOrgName(result.orgName);
-        setRrNr(result.referanceNr.toString());
         setData(result);
-
         navigate("/form/2", {
           state: {
-            applicantName: result.fullName,
+            name: result.fullName,
             orgName: result.orgName,
             rfnr: result.referanceNr.toString(),
           },
@@ -58,14 +43,36 @@ function ReferenceID() {
       } else {
         setError("Referanse nummeret finnes ikke. Vennligst sjekk ID-en.");
       }
-    } catch (err) {
+    } catch (err: any) {
       setError("Feil ved henting av data. Vennligst sjekk ID-en.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSubmit = () => {
+  const handleEditRedirect = async () => {
+    if (editId.trim() === "") {
+      setError("Vennligst fyll inn en gyldig referanse ID for redigering.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5150/api/Case/${editId}`);
+      if (!response.ok) {
+        setError("Saken finnes ikke. Vennligst sjekk ID-en.");
+        return;
+      }
+
+      navigate("/form/edit", {
+        state: { referenceId: editId },
+      });
+    } catch (err: any) {
+      setError("Feil ved henting av sakdata.");
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault(); 
     if (id.trim() === "") {
       setError("Vennligst fyll inn en gyldig referanse ID.");
       return;
@@ -78,38 +85,44 @@ function ReferenceID() {
       <h2>
         <IoBriefcaseOutline /> Referanse
       </h2>
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <h3>Fyll inn din referanse ID mottatt i brev fra UDI.</h3>
         <Form.Field>
-          <div className="labelWrapper">
-            <FaAsterisk />
-            <label>Referanse ID</label>
-          </div>
-          <input
+          <label>Referanse ID</label>
+          <Input
             type="text"
             value={id}
             onChange={(e) => setId(e.target.value)}
-            placeholder="Referanse ID"
+            placeholder="Enter ID"
             required
           />
         </Form.Field>
-
-
         <Grid>
           <Grid.Column textAlign="center">
-            {/* <Button onClick={() => navigate(0)}>Forrige side</Button> */}
-            <Button
-              type="button"
-              onClick={handleSubmit}
-              positive
-              loading={loading}
-            >
+            <Button type="button" onClick={() => navigate(-1)}>Forrige side</Button>
+            <Button type="submit" positive loading={loading}>
               Neste Side
             </Button>
           </Grid.Column>
         </Grid>
       </Form>
+
       {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {/* New Input Field for Editing */}
+      <h3>Endre eksisterende sak:</h3>
+      <Form.Field>
+        <label>Referanse ID for redigering</label>
+        <Input
+          type="text"
+          value={editId}
+          onChange={(e) => setEditId(e.target.value)}
+          placeholder="Enter existing case ID"
+        />
+      </Form.Field>
+      <Button type="button" onClick={handleEditRedirect} positive>
+        Gå til redigering
+      </Button>
     </Container>
   );
 }
