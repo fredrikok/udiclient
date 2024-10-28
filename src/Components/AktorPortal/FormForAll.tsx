@@ -57,7 +57,14 @@ function FormQuestions() {
       console.log("Henter data å sjekker om case allerede ekisterer");
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/api/Case/${referenceNr}`
+          `${import.meta.env.VITE_BASE_URL}/api/Case/${referenceNr}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Api-Key": `${import.meta.env.VITE_API_KEY}`,
+            },
+          }
         );
         if (!response.ok) throw new Error("Failed to fetch case data.");
 
