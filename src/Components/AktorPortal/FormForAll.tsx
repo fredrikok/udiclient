@@ -43,8 +43,12 @@ function FormQuestions() {
   const orgNavnFromState = state?.orgName || "";
   const rfnr = state?.rfnr || "";
 
+  //error handeling
   const [contactError, setContactError] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
+  const [innsigelseError, setinnsigelseError] = useState<string>("");
+  const [dateError, setDateError] = useState<string>("");
+  const [debtError, setDebtError] = useState<string>("");
 
   const { userName, userEmail } = AzureInfo();
 
@@ -125,6 +129,13 @@ function FormQuestions() {
     setCookie("email", userEmail, 7);
   };
 
+  const handleDebtChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDebtError("");
+    const debt = parseFloat(e.target.value);
+    setDebtValue(isNaN(debt) ? null : debt);
+    setDebtAsCauseOfObjection(true);
+  };
+
   useEffect(() => {
     setOrgNavn(orgNavnFromState);
     setReferenceNr(rfnr);
@@ -169,9 +180,23 @@ function FormQuestions() {
     else setOrgNr("");
   };
 
+  useEffect(() => {
+    if (hasObjections !== null) {
+      setinnsigelseError("");
+      setDateError("");
+      setDebtError("");
+    }
+  }, [hasObjections, departureDateMismatch, debtAsCauseOfObjection]);
+
   const handleNextPage = () => {
     let valid = true;
 
+    // Clear previous errors
+    setContactError("");
+    setEmailError("");
+    setError("");
+
+    // Form page 1 validation
     if (!contactPerson.trim()) {
       setContactError("Kontaktinformasjon er påkrevd.");
       valid = false;
@@ -184,6 +209,28 @@ function FormQuestions() {
     } else if (!emailPattern.test(email)) {
       setEmailError("Ugyldig e-postadresse.");
       valid = false;
+    }
+
+    // Form page 2 validation
+    if (currentPage === 2) {
+      if (hasObjections === null) {
+        setinnsigelseError("Vennligst velg Ja eller Nei.");
+        valid = false;
+      }
+
+      if (hasObjections === true) {
+        if (departureDateMismatch === true && !proposedDate) {
+          setDateError("Vennligst spesifiser en dato.");
+          valid = false;
+        }
+        if (
+          debtAsCauseOfObjection === true &&
+          (debtValue === null || debtValue <= 0)
+        ) {
+          setDebtError("Vennligst spesifiser et gyldig gjeldsbeløp.");
+          valid = false;
+        }
+      }
     }
 
     if (valid) {
@@ -323,7 +370,6 @@ function FormQuestions() {
                 value={email}
                 onChange={handleEmailChange}
               />
-              {/* {emailError && <Message negative>{emailError}</Message>} */}
             </Form.Field>
           </>
         );
@@ -331,7 +377,20 @@ function FormQuestions() {
         return (
           <>
             <Form.Field>
-              <label>Spørsmål 1: Har innvendinger?</label>
+              <div
+                className={
+                  innsigelseError ? "labelWrapper Error" : "labelWrapper"
+                }
+              >
+                <FaAsterisk />
+                <label>Spørsmål 1: Har innvendinger?</label>
+                {innsigelseError && (
+                  <>
+                    <p>-</p>
+                    <p>{innsigelseError}</p>
+                  </>
+                )}
+              </div>
               <Form.Group>
                 <Form.Field>
                   <Radio
@@ -385,7 +444,21 @@ function FormQuestions() {
 
                 {departureDateMismatch === true && (
                   <Form.Field>
-                    <label>Spørsmål 3: spesifiser dato</label>
+                    <div
+                      className={
+                        dateError ? "labelWrapper Error" : "labelWrapper"
+                      }
+                    >
+                      <FaAsterisk />
+                      <label>Spørsmål 3: spesifiser dato</label>
+                      {dateError && (
+                        <>
+                          <p>-</p>
+                          <p>{dateError}</p>
+                        </>
+                      )}
+                    </div>
+
                     <Input
                       type="date"
                       min={today}
@@ -434,11 +507,26 @@ function FormQuestions() {
 
                 {debtAsCauseOfObjection === true && (
                   <Form.Field>
-                    <label>Hva er gjeldsbeløpet?</label>
+                    <div
+                      className={
+                        debtError ? "labelWrapper Error" : "labelWrapper"
+                      }
+                    >
+                      <FaAsterisk />
+                      <label>Hva er gjeldsbeløpet?</label>
+                      {debtError && (
+                        <>
+                          <p>-</p>
+                          <p>{debtError}</p>
+                        </>
+                      )}
+                    </div>
+
                     <Input
                       type="number"
                       value={debtValue || ""}
-                      onChange={(e) => setDebtValue(Number(e.target.value))}
+                      // onChange={(e) => setDebtValue(Number(e.target.value))}
+                      onChange={handleDebtChange}
                     />
                   </Form.Field>
                 )}
