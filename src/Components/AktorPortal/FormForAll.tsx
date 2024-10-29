@@ -52,9 +52,14 @@ function FormQuestions() {
 
   const { userName, userEmail } = AzureInfo();
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
 
-  console.log(name);
+
+
+  function formatDateToLocal(date: Date): string {
+    const adjustedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    return adjustedDate.toISOString().split("T")[0];
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -128,6 +133,14 @@ function FormQuestions() {
     setEmail(userEmail);
     setCookie("email", userEmail, 7);
   };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDateError("");
+    const date = new Date(e.target.value);
+    setProposedDate(date);
+    setDepartureDateMismatch(true);
+  };
+
 
   const handleDebtChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDebtError("");
@@ -257,6 +270,7 @@ function FormQuestions() {
         debtAsCauseOfObjection: debtAsCauseOfObjection,
         debtValue: debtValue !== null ? Number(debtValue) : 0,
       };
+
 
       try {
         const response = await fetch(
@@ -459,22 +473,16 @@ function FormQuestions() {
                       )}
                     </div>
 
+
                     <Input
                       type="date"
                       min={today}
                       value={
                         proposedDate
-                          ? proposedDate.toISOString().split("T")[0]
+                          ? formatDateToLocal(proposedDate)
                           : ""
                       }
-                      onChange={(e) => {
-                        const selectedDate = new Date(e.target.value);
-                        if (selectedDate >= new Date(today)) {
-                          setProposedDate(selectedDate);
-                        } else {
-                          setError("Datoen må være i fremtiden.");
-                        }
-                      }}
+                      onChange={handleDateChange}
                     />
                   </Form.Field>
                 )}
